@@ -1,0 +1,12 @@
+.git
+.github
+.gitignore
+README.md
+*.md
+.DS_Store
+.vscode
+.idea
+node_modules
+memory
+skills
+*.log
