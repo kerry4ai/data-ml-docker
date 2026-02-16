@@ -1,4 +1,4 @@
-FROM nvcr.io/nvidia/tensorflow:24.01-tf2-py3
+FROM nvcr.io/nvidia/tensorflow:25.02-tf2-py3
 
 # 维护者信息
 LABEL maintainer="ml-docker-env"
