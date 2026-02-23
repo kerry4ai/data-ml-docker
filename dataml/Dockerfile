@@ -2,7 +2,7 @@
 
 # Placeholder for NVIDIA PyTorch base image
 # Please replace with the actual image, e.g., FROM nvcr.io/nvidia/pytorch:23.05-py3
-ARG PYTORCH_IMAGE
+ARG PYTORCH_IMAGE=nvcr.io/nvidia/pytorch:23.05-py3
 FROM $PYTORCH_IMAGE
 
 LABEL maintainer="ml-docker-env"

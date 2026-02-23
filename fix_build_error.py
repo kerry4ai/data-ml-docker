@@ -63,6 +63,15 @@ RUN JULIA_URL_BASE="https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_MAJ
 
         # Define the dependencies to add and the insertion point
         dependencies_to_add = "    libfontconfig1-dev \\\n    libfreetype6-dev \\\n    libharfbuzz-dev \\\n    libfribidi-dev \\\n"
+        
+        if all(dep.strip().replace(' \\', '') in dockerfile_content for dep in dependencies_to_add.split('\\n') if dep.strip() and dep.strip() != '\\'):
+            print("Required systemfonts/freetype2 dependencies already exist in Dockerfile. No action needed.", file=sys.stderr)
+            return True, "Systemfonts/freetype2 dependencies already present"
+
+        # If they are not all present, then try to insert
+        # The insertion logic should correctly identify the multiline RUN command to append to.
+        # Let's assume for now that the original regex was intended to find the block to append to.
+        # If match is not found, it implies the structure is unexpected or the block needs to be created.
         insertion_point_pattern = re.compile(r'(RUN apt-get update && apt-get install -y --no-install-recommends \\\n(?:    [^\\]+\\\n)*?    openssh-server \\\n)')
 
         match = insertion_point_pattern.search(dockerfile_content)
