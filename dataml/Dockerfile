@@ -56,9 +56,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
     libxml2-dev \
     && apt-get clean \
+        libfontconfig1-dev \
+    libfreetype6-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Pre-install common R packages
+ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/lib/pkgconfig
+ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/lib
 ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/lib/pkgconfig
 ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/lib
 RUN R -e "install.packages(c('tidyverse', 'caret', 'randomForest', 'xgboost', 'ggplot2', 'dplyr'), repos='https://cloud.r-project.org/')"
