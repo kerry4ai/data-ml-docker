@@ -59,12 +59,16 @@ ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/lib/pkgconfig
 ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/lib
 RUN R -e "install.packages(c('tidyverse', 'caret', 'randomForest', 'xgboost', 'ggplot2', 'dplyr'), repos='https://cloud.r-project.org/')"
 
-# Install Julia (fixed stable version)
-ENV JULIA_MAJOR_MINOR=1.12
-ENV JULIA_VERSION=1.12.5
-RUN JULIA_URL_BASE="https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_MAJOR_MINOR}" \
-    && echo "Installing Julia ${JULIA_VERSION}" \
-    && wget -q "${JULIA_URL_BASE}/julia-${JULIA_VERSION}-linux-x86_64.tar.gz" -O /tmp/julia.tar.gz \
+# Install Julia (latest stable version dynamically identified)
+RUN JULIA_LATEST_VERSION_PAGE=$(curl -sL "https://julialang.org/downloads/manual-downloads/") \
+    && JULIA_FULL_VERSION=$(echo "$JULIA_LATEST_VERSION_PAGE" | grep -oP 'Current stable release: v\K\d+\.\d+\.\d+' | head -n 1) \
+    && if [ -z "$JULIA_FULL_VERSION" ]; then echo "Error: Could not determine latest stable Julia version." >&2; exit 1; fi \
+    && JULIA_MAJOR_MINOR=$(echo "$JULIA_FULL_VERSION" | grep -oP '\d+\.\d+') \
+    && echo "Detected latest stable Julia version: ${JULIA_FULL_VERSION} (Major.Minor: ${JULIA_MAJOR_MINOR})" \
+    && JULIA_URL_BASE="https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_MAJOR_MINOR}" \
+    && WGET_URL="${JULIA_URL_BASE}/julia-${JULIA_FULL_VERSION}-linux-x86_64.tar.gz" \
+    && echo "Downloading Julia from: ${WGET_URL}" \
+    && wget -q "${WGET_URL}" -O /tmp/julia.tar.gz \
     && tar -xzf /tmp/julia.tar.gz -C /usr/local --strip-components=1 \
     && rm /tmp/julia.tar.gz
 
@@ -86,4 +90,4 @@ exec "$@"' > /usr/local/bin/start.sh \
 
 WORKDIR /workspace
 
-CMD ["/usr/local/bin/start.sh", "jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--allow-root", "--no-browser", "--NotebookApp.token=''"]
+CMD ["/usr/local/bin/start.sh", "jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--allow-root", "--no-browser", "--NotebookApp.token=''"
