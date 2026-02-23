@@ -58,19 +58,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN R -e "install.packages(c('tidyverse', 'caret', 'randomForest', 'xgboost', 'ggplot2', 'dplyr'), repos='https://cloud.r-project.org/')"
 
 # Install Julia (latest stable version dynamically)
-ENV JULIA_MAJOR_MINOR=1.12
-RUN JULIA_URL_BASE="https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_MAJOR_MINOR}" \
-    && JULIA_VERSION=$(curl -s "${JULIA_URL_BASE}/" | grep -oP 'julia-\\K\d+\.\d+\.\d+(?=-linux-x86_64\.tar\.gz)' | sort -V | tail -n 1) \
-    && echo "Installing Julia ${JULIA_VERSION}" \
-    && wget -q "${JULIA_URL_BASE}/julia-${JULIA_VERSION}-linux-x86_64.tar.gz" -O /tmp/julia.tar.gz \
-    && tar -xzf /tmp/julia.tar.gz -C /usr/local --strip-components=1 \
-    && rm /tmp/julia.tar.gz
+# ENV JULIA_MAJOR_MINOR=1.12
+# RUN JULIA_URL_BASE="https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_MAJOR_MINOR}" \
+#     && JULIA_VERSION=$(curl -s "${JULIA_URL_BASE}/" | grep -oP 'julia-\\K\d+\.\d+\.\d+(?=-linux-x86_64\.tar\.gz)' | sort -V | tail -n 1) \
+#     && echo "Installing Julia ${JULIA_VERSION}" \
+#     && wget -q "${JULIA_URL_BASE}/julia-${JULIA_VERSION}-linux-x86_64.tar.gz" -O /tmp/julia.tar.gz \
+#     && tar -xzf /tmp/julia.tar.gz -C /usr/local --strip-components=1 \
+#     && rm /tmp/julia.tar.gz
 
-# Pre-install common Julia packages
-RUN julia -e 'using Pkg; Pkg.add(["DataFrames", "CSV", "Flux", "GLM", "Plots", "StatsBase"])'
+# # Pre-install common Julia packages
+# RUN julia -e 'using Pkg; Pkg.add(["DataFrames", "CSV", "Flux", "GLM", "Plots", "StatsBase"])'
 
-ENV PATH=$PATH:/usr/local/julia/bin
-ENV JULIAdepot=/opt/julia
+# ENV PATH=$PATH:/usr/local/julia/bin
+# ENV JULIAdepot=/opt/julia
 
 EXPOSE 22 8888 6006 8787
 
