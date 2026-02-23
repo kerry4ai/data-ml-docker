@@ -25,6 +25,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     vim \
     openssh-server \
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
     && mkdir -p /var/run/sshd \
     && sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config \
     && sed -i 's@session\\s*required\\s*pam_loginuid.so@session optional pam_loginuid.so@g' /etc/pam.d/sshd \
@@ -47,10 +51,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcurl4-openssl-dev \
     libssl-dev \
     libxml2-dev \
-    libfontconfig1-dev \
-    libfreetype6-dev \
-    libharfbuzz-dev \
-    libfribidi-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
